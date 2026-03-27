@@ -1,32 +1,47 @@
-"""sportly — Python SDK for ESPN and NHL sports data.
+"""sportly — Python SDK for multi-source sports data.
+
+Sources
+-------
+- ``sportly.espn``      ESPN (17 sports, 139+ leagues)
+- ``sportly.nhl``       NHL Web API + Stats REST
+- ``sportly.mlb``       MLB Stats API
+- ``sportly.nba``       NBA Stats API (WAF headers auto-injected)
+- ``sportly.nfl``       NFL via ESPN public infrastructure
+- ``sportly.fantasy``   ESPN Fantasy API v3 (public + private leagues)
+- ``sportly.fotmob``    FotMob web API (xG, shot maps, ratings)
+- ``sportly.sofascore`` Sofascore API (requires ``pip install sportly[sofascore]``)
 
 Quick start
 -----------
 ::
 
-    from sportly.espn import basketball, football, soccer, hockey
+    from sportly import mlb, nba, nfl, fotmob
 
-    # NBA teams
-    teams = basketball.teams("nba")
+    # Today's MLB games
+    mlb.schedule()
 
-    # Today's NBA scores
-    scores = basketball.scoreboard("nba")
+    # NBA scoring leaders
+    nba.leaders("PTS", season="2024-25")
 
-    # EPL table
-    table = soccer.standings("eng.1")
+    # NFL scoreboard, Week 1
+    nfl.scoreboard(week=1, season=2024)
 
-    # NFL game summary
-    game = football.game("nfl", "401671803")
+    # Premier League table
+    fotmob.league(47)
+
+    # ESPN fantasy roster
+    from sportly import fantasy
+    fantasy.roster("ffl", league_id=123456, season=2025)
 
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Joseph Wilson"
 __email__ = "jwilson@kloverdevs.ca"
 
-# Convenience re-exports
+# Core client and exceptions — importable at top level
 from sportly.client import SportlyClient  # noqa: F401
-from sportly.exceptions import SportlyError, NotFoundError, RateLimitError  # noqa: F401
+from sportly.exceptions import NotFoundError, RateLimitError, SportlyError  # noqa: F401
 
 __all__ = [
     "__version__",

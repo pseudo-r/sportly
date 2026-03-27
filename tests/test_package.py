@@ -5,7 +5,7 @@ import pytest
 
 def test_package_version():
     import sportly
-    assert sportly.__version__ == "1.0.0"
+    assert sportly.__version__ == "1.1.0"
 
 
 def test_espn_modules_importable():

@@ -4,11 +4,14 @@ on:
   release:
     types: [published]
 
-jobs:
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
+permissions:
+  id-token: write   # required for PyPI OIDC trusted publishing
+  contents: read
 
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -17,16 +20,31 @@ jobs:
           python-version: "3.12"
 
       - name: Install build tools
-        run: pip install build twine
+        run: pip install build
 
-      - name: Build distribution
+      - name: Build wheel and sdist
         run: python -m build
 
-      - name: Check distribution
-        run: twine check dist/*
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
-      - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: twine upload dist/*
+  publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: pypi
+      url: https://pypi.org/project/sportly/
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI (OIDC Trusted Publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1

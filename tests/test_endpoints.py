@@ -380,3 +380,36 @@ class TestNHLModulePublicAPI:
         for fn in ["teams", "schedule", "game", "play_by_play", "landing",
                    "roster", "standings", "player", "weekly"]:
             assert callable(getattr(nhl, fn)), f"nhl.{fn} not callable"
+
+
+# ── Fantasy players endpoint ──────────────────────────────────────────────────
+
+class TestFantasyPlayersEp:
+    def test_players_returns_list(self, monkeypatch):
+        import sportly.fantasy.endpoints.players as pep
+        monkeypatch.setattr(pep, "get_client",
+            lambda cookies=None: _FantasyMockClient([{"id": 1, "fullName": "Patrick Mahomes"}]))
+        result = pep.players("ffl", season=2025)
+        assert result[0]["fullName"] == "Patrick Mahomes"
+
+    def test_players_non_list_response_returns_empty(self, monkeypatch):
+        import sportly.fantasy.endpoints.players as pep
+        monkeypatch.setattr(pep, "get_client",
+            lambda cookies=None: _FantasyMockClient({"error": "no data"}))
+        result = pep.players("ffl", season=2025)
+        assert result == []
+
+    def test_players_active_only_false(self, monkeypatch):
+        import sportly.fantasy.endpoints.players as pep
+        monkeypatch.setattr(pep, "get_client",
+            lambda cookies=None: _FantasyMockClient([{"id": 99}]))
+        result = pep.players("ffl", season=2025, active_only=False)
+        assert result[0]["id"] == 99
+
+    def test_players_with_cookies(self, monkeypatch):
+        import sportly.fantasy.endpoints.players as pep
+        cookies = {"espn_s2": "abc", "SWID": "{xyz}"}
+        monkeypatch.setattr(pep, "get_client",
+            lambda cookies=None: _FantasyMockClient([{"id": 7}]))
+        result = pep.players("fba", season=2025, cookies=cookies)
+        assert result[0]["id"] == 7

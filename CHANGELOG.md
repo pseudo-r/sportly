@@ -11,6 +11,23 @@ Versioning: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [1.1.1] — 2026-03-27
+
+### Added
+- **`sportly.nhl.endpoints`** subpackage — `games` (boxscore, play_by_play, landing), `schedule` (schedule, weekly), `teams` (franchises, roster, standings, player)
+- **`sportly.nhl`** public API expanded from 2 functions to 9: `game()`, `play_by_play()`, `landing()`, `roster()`, `standings()`, `player()`, `weekly()`
+- **`FUNDING.yml`** — GitHub Sponsors button (Buy Me a Coffee, GitHub Sponsors, PayPal)
+- `ruff.toml` — centralised lint config with `per-file-ignores` for test helpers
+
+### Fixed
+- Ruff violations across all modules: `SIM108` (cli.py), `SIM105` (espn/_parse.py), `B905` (nba/_client.py), `F401` (fotmob, mlb, nba `__init__`), `ARG005` / `E741` in test files
+
+### Changed
+- `publish.yml` upgraded to PyPI **OIDC Trusted Publishing** — no `PYPI_API_TOKEN` secret required
+- Repository "About" description and topics updated to reflect all 8 sources
+
+---
+
 ## [1.1.0] — 2026-03-26
 
 ### Added

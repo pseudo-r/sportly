@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sportly"
-version = "1.1.0"
-description = "Python SDK for multi-source sports data — ESPN, MLB, NBA, NFL, FotMob, Sofascore, and more"
+version = "1.1.1"
+description = "Python SDK for multi-source sports data — ESPN (17 sports, 139+ leagues), NHL, MLB, NBA, NFL, FotMob, Sofascore & Fantasy"
 readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}

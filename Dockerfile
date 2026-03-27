@@ -4,8 +4,9 @@ FROM python:3.12-slim
 # Metadata
 LABEL maintainer="jwilson@kloverdevs.ca"
 LABEL org.opencontainers.image.title="sportly"
-LABEL org.opencontainers.image.description="Python SDK for ESPN and NHL sports data"
+LABEL org.opencontainers.image.description="Python SDK for multi-source sports data — ESPN, MLB, NBA, NFL, FotMob, Sofascore, Fantasy, NHL"
 LABEL org.opencontainers.image.source="https://github.com/pseudo-r/sportly"
+LABEL org.opencontainers.image.version="1.1.0"
 
 # Don't buffer stdout/stderr
 ENV PYTHONUNBUFFERED=1

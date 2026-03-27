@@ -260,6 +260,65 @@ def _cmd_fotmob(args: argparse.Namespace) -> None:
         sys.exit(1)
 
 
+# ── Fantasy ───────────────────────────────────────────────────────────────────
+
+def _cmd_fantasy(args: argparse.Namespace) -> None:
+    import sportly.fantasy as fantasy
+    cmd     = args.fs_cmd
+    game    = args.game
+    lid     = getattr(args, "league_id", None)
+    season  = getattr(args, "season", None)
+    cookies = None
+    if getattr(args, "espn_s2", None) and getattr(args, "swid", None):
+        cookies = {"espn_s2": args.espn_s2, "SWID": args.swid}
+
+    if cmd == "league":
+        views = args.views.split(",") if getattr(args, "views", None) else None
+        _dump(fantasy.league(game, league_id=lid, season=season, views=views, cookies=cookies))
+    elif cmd == "teams":
+        _dump(fantasy.teams(game, league_id=lid, season=season, cookies=cookies))
+    elif cmd == "roster":
+        _dump(fantasy.roster(game, league_id=lid, season=season, cookies=cookies))
+    elif cmd == "standings":
+        _dump(fantasy.standings(game, league_id=lid, season=season, cookies=cookies))
+    elif cmd == "draft":
+        _dump(fantasy.draft(game, league_id=lid, season=season, cookies=cookies))
+    elif cmd == "meta":
+        _dump(fantasy.game_meta(game, cookies=cookies))
+    else:
+        print(f"Unknown Fantasy command '{cmd}'.")
+        sys.exit(1)
+
+
+# ── Sofascore ─────────────────────────────────────────────────────────────────
+
+def _cmd_sofascore(args: argparse.Namespace) -> None:
+    try:
+        import sportly.sofascore as sofascore
+    except ImportError:
+        print("sportly.sofascore requires curl_cffi. Install with: pip install sportly[sofascore]")
+        sys.exit(1)
+    cmd = args.ss_cmd
+
+    if cmd == "matches":
+        _dump(sofascore.matches(args.sport, args.date))
+    elif cmd == "match":
+        _dump(sofascore.match(args.id))
+    elif cmd == "stats":
+        _dump(sofascore.match_stats(args.id))
+    elif cmd == "lineups":
+        _dump(sofascore.lineups(args.id))
+    elif cmd == "player":
+        _dump(sofascore.player(args.id))
+    elif cmd == "team":
+        _dump(sofascore.team(args.id))
+    elif cmd == "squad":
+        _dump(sofascore.squad(args.id))
+    else:
+        print(f"Unknown Sofascore command '{cmd}'.")
+        sys.exit(1)
+
+
 # ── Argument parser ───────────────────────────────────────────────────────────
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -350,6 +409,40 @@ def _build_parser() -> argparse.ArgumentParser:
         p2 = fm_sub.add_parser(cmd, help=f"FotMob {cmd} by ID")
         p2.add_argument("id", type=int, help="Numeric FotMob ID")
 
+    # ── fantasy ───────────────────────────────────────────────────────────────
+    def _add_fantasy_common(p: argparse.ArgumentParser) -> None:
+        p.add_argument("game", choices=["ffl", "fba", "flb", "fhl"], help="Game code")
+        p.add_argument("--league-id", required=True, type=int, dest="league_id", help="League ID")
+        p.add_argument("--season",    required=True, type=int, help="Season year")
+        p.add_argument("--espn-s2",   dest="espn_s2", default=None, help="espn_s2 cookie (private leagues)")
+        p.add_argument("--swid",      dest="swid",    default=None, help="SWID cookie (private leagues)")
+
+    fs_p   = sub.add_parser("fantasy", help="ESPN Fantasy (ffl/fba/flb/fhl)")
+    fs_sub = fs_p.add_subparsers(dest="fs_cmd")
+    for cmd in ("teams", "roster", "standings", "draft"):
+        p2 = fs_sub.add_parser(cmd, help=f"Fantasy {cmd}")
+        _add_fantasy_common(p2)
+    lg_p = fs_sub.add_parser("league", help="Raw league data by view")
+    _add_fantasy_common(lg_p)
+    lg_p.add_argument("--views", default=None, help="Comma-separated views e.g. mTeam,mRoster")
+    mt_p = fs_sub.add_parser("meta", help="Game metadata")
+    mt_p.add_argument("game", choices=["ffl", "fba", "flb", "fhl"], help="Game code")
+    mt_p.add_argument("--espn-s2", dest="espn_s2", default=None)
+    mt_p.add_argument("--swid",    dest="swid",    default=None)
+
+    # ── sofascore ─────────────────────────────────────────────────────────────
+    ss_p   = sub.add_parser("sofascore", help="Sofascore (requires pip install sportly[sofascore])")
+    ss_sub = ss_p.add_subparsers(dest="ss_cmd")
+    ss_mt = ss_sub.add_parser("matches", help="Events for sport/date")
+    ss_mt.add_argument("sport", help="Sport slug e.g. football, basketball, tennis")
+    ss_mt.add_argument("date",  help="Date YYYY-MM-DD")
+    for cmd in ("match", "stats", "lineups"):
+        p2 = ss_sub.add_parser(cmd, help=f"Sofascore {cmd} by event ID")
+        p2.add_argument("id", type=int, help="Event / match ID")
+    for cmd in ("player", "team", "squad"):
+        p2 = ss_sub.add_parser(cmd, help=f"Sofascore {cmd} by ID")
+        p2.add_argument("id", type=int, help="Player / team ID")
+
     return parser
 
 
@@ -359,13 +452,15 @@ def main() -> None:
     args = parser.parse_args()
 
     dispatch = {
-        "info":    _cmd_info,
-        "espn":    _cmd_espn,
-        "nhl":     _cmd_nhl,
-        "mlb":     _cmd_mlb,
-        "nba":     _cmd_nba,
-        "nfl":     _cmd_nfl,
-        "fotmob":  _cmd_fotmob,
+        "info":       _cmd_info,
+        "espn":       _cmd_espn,
+        "nhl":        _cmd_nhl,
+        "mlb":        _cmd_mlb,
+        "nba":        _cmd_nba,
+        "nfl":        _cmd_nfl,
+        "fotmob":     _cmd_fotmob,
+        "fantasy":    _cmd_fantasy,
+        "sofascore":  _cmd_sofascore,
     }
 
     handler = dispatch.get(args.command)

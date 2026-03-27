@@ -1,6 +1,6 @@
 # sportly
 
-> Python SDK for ESPN and NHL sports data — batteries-included.
+> Python SDK for multi-source sports data — ESPN, MLB, NBA, NFL, FotMob, Sofascore, ESPN Fantasy, and NHL.
 
 [![PyPI version](https://badge.fury.io/py/sportly.svg)](https://badge.fury.io/py/sportly)
 [![CI](https://github.com/pseudo-r/sportly/actions/workflows/ci.yml/badge.svg)](https://github.com/pseudo-r/sportly/actions/workflows/ci.yml)
@@ -35,53 +35,124 @@
 
 ```bash
 pip install sportly
+
+# Include Sofascore support (curl_cffi TLS impersonation)
+pip install sportly[sofascore]
+
+# All optional extras
+pip install sportly[all]
 ```
 
 Requires Python 3.12+.
 
 ---
 
+## Data Sources
+
+| Module | Source | Auth | Special |
+|--------|--------|------|---------|
+| `sportly.espn` | ESPN (17 sports, 139+ leagues) | None | 6 ESPN API domains |
+| `sportly.nhl` | NHL Web API + NHL Stats REST | None | Official NHL data |
+| `sportly.mlb` | MLB Stats API (`statsapi.mlb.com`) | None | `hydrate=` embeds sub-resources |
+| `sportly.nba` | NBA Stats API (`stats.nba.com`) | WAF headers (auto-injected) | `resultSets` row-parser built-in |
+| `sportly.nfl` | ESPN public NFL infrastructure | None | Wraps existing ESPN domains |
+| `sportly.fantasy` | ESPN Fantasy v3 (`lm-api-reads`) | Cookies (private leagues only) | Public leagues need no auth |
+| `sportly.fotmob` | FotMob web API | None | xG, shot maps, player ratings |
+| `sportly.sofascore` | Sofascore API v1 | `curl_cffi` TLS spoof | `pip install sportly[sofascore]` |
+
+---
+
 ## Quick Start
 
 ```python
+# ── ESPN ──────────────────────────────────────────────────────────────
 from sportly.espn import basketball, football, soccer, hockey
 
 # NBA teams
 teams = basketball.teams("nba")
-
-# Today's NBA scoreboard
-games = basketball.scoreboard("nba")
-
 # EPL standings
 table = soccer.standings("eng.1")
+# NHL scores
+scores = hockey.scoreboard("nhl")
 
-# NFL injury report
-injuries = football.injuries("nfl")
+# ── MLB ───────────────────────────────────────────────────────────────
+from sportly import mlb
 
-# NHL schedule (native NHL API)
+games  = mlb.schedule()                          # today
+ohtani = mlb.player(660271)                      # Shohei Ohtani
+hr     = mlb.leaders("homeRuns", season=2025)    # HR leaders
+box    = mlb.boxscore(745444)                    # game boxscore
+
+# ── NBA ───────────────────────────────────────────────────────────────
+from sportly import nba
+
+sb     = nba.scoreboard("2025-03-26")
+shots  = nba.shot_chart("201939", "2024-25")     # Curry
+top    = nba.leaders("PTS", season="2024-25")
+st     = nba.standings("2024-25")
+
+# ── NFL ───────────────────────────────────────────────────────────────
+from sportly import nfl
+
+sb     = nfl.scoreboard(week=1, season=2024)
+dc     = nfl.depth_chart("6")                    # Cowboys
+inj    = nfl.injuries()
+qbr    = nfl.qbr(season=2024)
+
+# ── ESPN Fantasy ──────────────────────────────────────────────────────
+from sportly import fantasy
+
+teams  = fantasy.teams("ffl", league_id=336358, season=2025)
+draft  = fantasy.draft("ffl", league_id=336358, season=2025)
+# Private league:
+data   = fantasy.league("ffl", league_id=123456, season=2025,
+                         cookies={"espn_s2": "...", "SWID": "{...}"})
+
+# ── FotMob ────────────────────────────────────────────────────────────
+from sportly import fotmob
+
+day    = fotmob.matches("20260326")              # today's matches
+epl    = fotmob.league(47)                       # Premier League
+m      = fotmob.match(4310531)                   # xG, lineups, ratings
+
+# ── Sofascore ─────────────────────────────────────────────────────────
+from sportly import sofascore                    # requires pip install sportly[sofascore]
+
+games  = sofascore.matches("football", "2026-03-26")
+stats  = sofascore.match_stats(11352523)         # xG, possession
+lineup = sofascore.lineups(11352523)
+
+# ── NHL ───────────────────────────────────────────────────────────────
 from sportly import nhl
-today = nhl.schedule()
+
+today  = nhl.schedule()
+games  = nhl.scoreboard()
+roster = nhl.roster("TOR")
 ```
 
-### CLI
+---
+
+## CLI
 
 ```bash
 sportly info
+
+# ESPN
 sportly espn basketball teams --league nba
 sportly espn football scoreboard --league nfl
 sportly espn soccer standings --league eng.1
+
+# NHL
 sportly nhl teams
 sportly nhl schedule --date 2024-04-15
 ```
 
 ---
 
-## Sports Coverage
-
-17 sports · 139+ leagues · 6 ESPN API domains
+## ESPN Coverage (17 sports · 139+ leagues)
 
 | Module | Default League | Notable Leagues |
-|--------|---------------|-----------------|
+|--------|---------------|-----------------| 
 | `espn.basketball` | `nba` | WNBA, NCAA, NBL, FIBA |
 | `espn.football` | `nfl` | NCAAF, CFL, XFL, UFL |
 | `espn.soccer` | `eng.1` | 260+ leagues worldwide |
@@ -99,11 +170,10 @@ sportly nhl schedule --date 2024-04-15
 | `espn.rugby` | `180659` (Six Nations) | 24 competitions |
 | `espn.rugby_league` | `3` | NRL, Super League |
 | `espn.australian_football` | `afl` | AFL |
-| `nhl` (native) | — | Official NHL Web API |
 
 ---
 
-## Available Methods (per sport module)
+## ESPN Methods (per sport module)
 
 | Method | Description |
 |--------|-------------|
@@ -114,48 +184,23 @@ sportly nhl schedule --date 2024-04-15
 | `game(id, league)` | Game summary |
 | `news(league, limit)` | Latest news |
 | `standings(league, season)` | League table |
-| `rankings(league)` | Poll rankings (college) |
 | `injuries(league)` | Injury report |
 | `transactions(league)` | Signings / trades |
-| `leaders(league, season)` | Statistical leaders |
 | `athlete(id, league)` | Athlete profile |
-| `athlete_overview(id, league)` | Stats snapshot + next game |
 | `athlete_stats(id, league)` | Season statistics |
 | `athlete_gamelog(id, league)` | Game-by-game log |
-| `athlete_splits(id, league)` | Home/away/opponent splits |
-| `stats_leaders(league, category)` | Stats leaderboard |
 | `odds(event_id, league)` | Betting odds |
 | `play_by_play(event_id, league)` | Play-by-play |
-| `win_probability(event_id, league)` | Win probability |
 | `cdn_game(game_id)` | Full CDN game package |
-| `now_news(limit, league)` | Real-time ESPN news |
-
----
-
-## ESPN API Domains
-
-| Domain | Use |
-|--------|-----|
-| `site.api.espn.com/apis/site/v2/` | Scores, teams, news, injuries, transactions |
-| `site.api.espn.com/apis/v2/` | Standings (site/v2 returns a stub) |
-| `sports.core.api.espn.com/v2/` | Athletes, stats, odds, play-by-play |
-| `site.web.api.espn.com/apis/common/v3/` | Athlete stats, gamelog, splits |
-| `cdn.espn.com/core/` | Full game packages (xhr=1) |
-| `now.core.api.espn.com/v1/` | Real-time news feed |
-
-> **Disclaimer:** This SDK uses undocumented public ESPN APIs. Not affiliated with ESPN. Use responsibly.
 
 ---
 
 ## Documentation
 
-See [`docs/`](docs/) for sport-specific reference docs:
-
 - [ESPN Overview](docs/espn/index.md)
-- [Basketball](docs/espn/basketball.md) • [Football](docs/espn/football.md) • [Soccer](docs/espn/soccer.md)
-- [Hockey](docs/espn/hockey.md) • [Baseball](docs/espn/baseball.md) • [Cricket](docs/espn/cricket.md)
-- [Tennis](docs/espn/tennis.md) • [Golf](docs/espn/golf.md) • [MMA](docs/espn/mma.md)
-- [Racing](docs/espn/racing.md) • [Lacrosse](docs/espn/lacrosse.md) • [Rugby](docs/espn/rugby.md)
+- [Basketball](docs/espn/basketball.md) · [Football](docs/espn/football.md) · [Soccer](docs/espn/soccer.md) · [Hockey](docs/espn/hockey.md)
+- [MLB](docs/mlb/README.md) · [NBA](docs/nba/README.md) · [NFL](docs/nfl/README.md)
+- [ESPN Fantasy](docs/fantasy/README.md) · [FotMob](docs/fotmob/README.md) · [Sofascore](docs/sofascore/README.md)
 - [NHL (Native)](docs/nhl.md)
 
 ---
@@ -173,4 +218,6 @@ pytest
 
 MIT — see [LICENSE](LICENSE)
 
-*Last updated: March 2026 · 17 sports · 139+ leagues · 6 ESPN API domains*
+> **Disclaimer:** This SDK uses undocumented public APIs. Not affiliated with ESPN, MLB, NBA, NFL, FotMob, Sofascore, or NHL.
+
+*Last updated: March 2026 · v1.1.0 · 8 sources · 17+ sports · 139+ leagues*

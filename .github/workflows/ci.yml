@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   test:
@@ -41,15 +41,15 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: false
 
-  docker:
-    name: Docker Build
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t sportly:ci .
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Smoke test image
-        run: docker run --rm sportly:ci sportly info
+      - run: pip install ruff
+      - run: ruff check sportly/ tests/

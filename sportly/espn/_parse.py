@@ -6,10 +6,21 @@ Import these in endpoint modules rather than duplicating parse logic.
 
 from __future__ import annotations
 
+import contextlib
 from datetime import datetime
 from typing import Any
 
-from sportly.models import Article, Athlete, Competitor, Game, GameStatus, Logo, Standings, StandingEntry, Team
+from sportly.models import (
+    Article,
+    Athlete,
+    Competitor,
+    Game,
+    GameStatus,
+    Logo,
+    StandingEntry,
+    Standings,
+    Team,
+)
 
 
 def parse_team(raw: dict[str, Any]) -> Team:
@@ -57,10 +68,8 @@ def parse_game(raw: dict[str, Any]) -> Game:
         ))
     date: datetime | None = None
     if date_str := raw.get("date", ""):
-        try:
+        with contextlib.suppress(ValueError):
             date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        except ValueError:
-            pass
     return Game(
         id=str(raw.get("id", "")),
         uid=raw.get("uid", ""),
@@ -80,10 +89,8 @@ def parse_article(raw: dict[str, Any]) -> Article | None:
         return None
     pub: datetime | None = None
     if pub_str := raw.get("published", ""):
-        try:
+        with contextlib.suppress(ValueError):
             pub = datetime.fromisoformat(pub_str.replace("Z", "+00:00"))
-        except ValueError:
-            pass
     return Article(
         id=str(raw.get("dataSourceIdentifier") or raw.get("id") or ""),
         headline=headline[:500],

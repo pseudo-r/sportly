@@ -9,8 +9,8 @@ Submodules
 - ``players``  — ``player()``, ``search()``, ``transfers()``, ``world_news()``
 """
 from sportly.fotmob.endpoints import (  # noqa: F401
-    matches,
     leagues,
-    teams,
+    matches,
     players,
+    teams,
 )

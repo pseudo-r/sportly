@@ -18,11 +18,16 @@ Usage::
     print(nba.PLAYER_IDS)  # {"LeBron James": "2544", ...}
 """
 from __future__ import annotations
+
 from typing import Any
 
 from sportly.nba._client import (
-    LEAGUE_NBA, LEAGUE_WNBA, LEAGUE_GLEAGUE,
-    PLAYER_IDS, TEAM_IDS, NBAClient, get_client,
+    LEAGUE_GLEAGUE,
+    LEAGUE_NBA,
+    LEAGUE_WNBA,
+    PLAYER_IDS,
+    TEAM_IDS,
+    NBAClient,
 )
 from sportly.nba.endpoints import games as _games_ep
 from sportly.nba.endpoints import league as _league_ep

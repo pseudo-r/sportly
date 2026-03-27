@@ -29,8 +29,10 @@ Usage::
     print(mlb.TEAM_IDS)    # {"LAD": 119, "NYY": 147, ...}
 """
 from __future__ import annotations
+
 from typing import Any
-from sportly.mlb._client import LEAGUE_AL, LEAGUE_NL, SPORT_ID, TEAM_IDS, MLBClient, get_client
+
+from sportly.mlb._client import LEAGUE_AL, LEAGUE_NL, SPORT_ID, TEAM_IDS, MLBClient
 from sportly.mlb.endpoints import games as _games_ep
 from sportly.mlb.endpoints import players as _players_ep
 from sportly.mlb.endpoints import schedule as _schedule_ep

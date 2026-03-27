@@ -9,7 +9,7 @@ Submodules
 """
 from sportly.nfl.endpoints import (  # noqa: F401
     games,
-    teams,
-    players,
     league,
+    players,
+    teams,
 )

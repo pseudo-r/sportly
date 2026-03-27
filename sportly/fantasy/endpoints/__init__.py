@@ -10,6 +10,6 @@ Submodules
 """
 from sportly.fantasy.endpoints import (  # noqa: F401
     league,
-    players,
     meta,
+    players,
 )

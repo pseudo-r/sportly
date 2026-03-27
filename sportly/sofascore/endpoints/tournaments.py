@@ -1,6 +1,8 @@
 """sofascore.endpoints.tournaments — competitions and popular leagues."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.sofascore.endpoints._client import SPORTS, get
 
 

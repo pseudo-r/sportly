@@ -4,27 +4,25 @@ These tests exercise the endpoint files directly (not via __init__.py) to boost 
 of the new endpoint subpackage structure.
 """
 from __future__ import annotations
-import pytest
-
 
 # ── Sofascore endpoint submodules ─────────────────────────────────────────────
 
 class TestSofascoreScheduleEp:
     def test_matches_football(self, monkeypatch):
         import sportly.sofascore.endpoints.schedule as schedep
-        monkeypatch.setattr(schedep, "get", lambda path, client=None: {"events": [{"id": 1}]})
+        monkeypatch.setattr(schedep, "get", lambda *_, **__: {"events": [{"id": 1}]})
         result = schedep.matches("football", "2026-03-26")
         assert result[0]["id"] == 1
 
     def test_matches_soccer_alias(self, monkeypatch):
         import sportly.sofascore.endpoints.schedule as schedep
-        monkeypatch.setattr(schedep, "get", lambda path, client=None: {"events": [{"id": 2}]})
+        monkeypatch.setattr(schedep, "get", lambda *_, **__: {"events": [{"id": 2}]})
         result = schedep.matches("soccer", "2026-03-26")
         assert result[0]["id"] == 2
 
     def test_matches_tennis_tournaments(self, monkeypatch):
         import sportly.sofascore.endpoints.schedule as schedep
-        monkeypatch.setattr(schedep, "get", lambda path, client=None: {"tournaments": [{"id": 9}]})
+        monkeypatch.setattr(schedep, "get", lambda *_, **__: {"tournaments": [{"id": 9}]})
         result = schedep.matches("tennis", "2026-03-26")
         assert result[0]["id"] == 9
 
@@ -32,7 +30,7 @@ class TestSofascoreScheduleEp:
 class TestSofascoreEventsEp:
     def _patch(self, monkeypatch, body):
         import sportly.sofascore.endpoints.events as evep
-        monkeypatch.setattr(evep, "get", lambda path, client=None: body)
+        monkeypatch.setattr(evep, "get", lambda *_, **__: body)
         return evep
 
     def test_match(self, monkeypatch):
@@ -63,24 +61,24 @@ class TestSofascoreEventsEp:
 class TestSofascorePlayersEp:
     def test_player(self, monkeypatch):
         import sportly.sofascore.endpoints.players as plep
-        monkeypatch.setattr(plep, "get", lambda path, client=None: {"player": {"id": 1}})
+        monkeypatch.setattr(plep, "get", lambda *_, **__: {"player": {"id": 1}})
         assert plep.player(1)["player"]["id"] == 1
 
     def test_seasons(self, monkeypatch):
         import sportly.sofascore.endpoints.players as plep
-        monkeypatch.setattr(plep, "get", lambda path, client=None: {"seasons": []})
+        monkeypatch.setattr(plep, "get", lambda *_, **__: {"seasons": []})
         assert "seasons" in plep.seasons(1)
 
 
 class TestSofascoreTeamsEp:
     def test_team(self, monkeypatch):
         import sportly.sofascore.endpoints.teams as tep
-        monkeypatch.setattr(tep, "get", lambda path, client=None: {"team": {"id": 4705}})
+        monkeypatch.setattr(tep, "get", lambda *_, **__: {"team": {"id": 4705}})
         assert tep.team(4705)["team"]["id"] == 4705
 
     def test_squad(self, monkeypatch):
         import sportly.sofascore.endpoints.teams as tep
-        monkeypatch.setattr(tep, "get", lambda path, client=None: {"players": [{"id": 1}]})
+        monkeypatch.setattr(tep, "get", lambda *_, **__: {"players": [{"id": 1}]})
         result = tep.squad(4705)
         assert result[0]["id"] == 1
 
@@ -88,12 +86,12 @@ class TestSofascoreTeamsEp:
 class TestSofascoreTournamentsEp:
     def test_tournaments(self, monkeypatch):
         import sportly.sofascore.endpoints.tournaments as trnep
-        monkeypatch.setattr(trnep, "get", lambda path, client=None: {"uniqueTournaments": []})
+        monkeypatch.setattr(trnep, "get", lambda *_, **__: {"uniqueTournaments": []})
         assert "uniqueTournaments" in trnep.tournaments("football")
 
     def test_popular(self, monkeypatch):
         import sportly.sofascore.endpoints.tournaments as trnep
-        monkeypatch.setattr(trnep, "get", lambda path, client=None: {"entities": []})
+        monkeypatch.setattr(trnep, "get", lambda *_, **__: {"entities": []})
         assert "entities" in trnep.popular("US")
 
     def test_sports_constant(self):
@@ -236,6 +234,7 @@ class TestFantasyMetaEp:
 
 def _mock_nfl_client(body: dict):
     import httpx
+
     from sportly.client import SportlyClient
     c = SportlyClient()
     c._http = httpx.Client(transport=httpx.MockTransport(lambda req: httpx.Response(200, json=body)))

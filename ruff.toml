@@ -1,0 +1,19 @@
+line-length = 110
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "I", "B", "SIM"]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in default argument
+]
+
+[lint.per-file-ignores]
+"tests/*" = [
+    "ARG005",  # unused lambda argument — intentional in mock lambdas
+    "E741",    # ambiguous variable name — e.g. `l` in test loops
+    "SIM108",  # ternary operator — not always clearer in test setup
+]
+"sportly/cli.py" = [
+    "SIM108",  # ternary operator sometimes less readable in dispatch code
+]

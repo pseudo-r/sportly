@@ -8,6 +8,7 @@ Usage::
     print(rugby.LEAGUES)                 # all league IDs
 """
 from __future__ import annotations
+
 from sportly.client import SportlyClient
 from sportly.espn._domains import ESPNDomain
 from sportly.espn._leagues import LEAGUES as _ALL_LEAGUES

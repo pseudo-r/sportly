@@ -1,6 +1,8 @@
 """nhl.endpoints.teams — franchise list, roster, standings."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.nhl._client import NHLClient
 
 

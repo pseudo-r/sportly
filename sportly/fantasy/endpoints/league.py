@@ -1,7 +1,9 @@
 """fantasy.endpoints.league — league-level data (teams, rosters, standings, draft)."""
 from __future__ import annotations
+
 from typing import Any
-from sportly.fantasy.endpoints._client import FantasyClient, get_client
+
+from sportly.fantasy.endpoints._client import get_client
 
 
 def fetch(

@@ -1,5 +1,6 @@
 """sportly.espn.water_polo — NCAA men's and women's water polo."""
 from __future__ import annotations
+
 from sportly.client import SportlyClient
 from sportly.espn._leagues import LEAGUES as _ALL_LEAGUES
 from sportly.espn.endpoints import news as _news_ep

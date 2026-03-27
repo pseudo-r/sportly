@@ -10,9 +10,9 @@ Submodules
 - ``tournaments`` — tournament directory, popular entities
 """
 from sportly.sofascore.endpoints import (  # noqa: F401
-    schedule,
     events,
     players,
+    schedule,
     teams,
     tournaments,
 )

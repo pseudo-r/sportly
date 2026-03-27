@@ -1,7 +1,9 @@
 """sportly.mlb.endpoints.teams — Team and roster endpoints."""
 from __future__ import annotations
+
 from typing import Any
-from sportly.mlb._client import MLBClient, SPORT_ID, get_client
+
+from sportly.mlb._client import SPORT_ID, MLBClient, get_client
 
 
 def all(

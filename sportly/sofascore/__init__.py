@@ -25,6 +25,7 @@ Endpoint subpackage::
     from sportly.sofascore.endpoints import schedule, events, players, teams, tournaments
 """
 from __future__ import annotations
+
 from typing import Any
 
 from sportly.sofascore.endpoints._client import SPORTS, get_curl_session

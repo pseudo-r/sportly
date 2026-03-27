@@ -1,6 +1,8 @@
 """Tests for sportly.nfl — mocked ESPN calls, no network."""
 from __future__ import annotations
+
 import httpx
+
 from sportly.client import SportlyClient
 
 

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from sportly.espn import basketball
 from sportly.models import Article, Game, Standings, Team
 

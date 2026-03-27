@@ -22,10 +22,11 @@ Endpoint subpackage::
     from sportly.fantasy.endpoints import league, players, meta
 """
 from __future__ import annotations
+
 import json
 from typing import Any
 
-from sportly.fantasy.endpoints._client import FantasyClient, GAME_CODES, VIEWS
+from sportly.fantasy.endpoints._client import GAME_CODES, VIEWS, FantasyClient
 
 __all__ = [
     "FantasyClient", "GAME_CODES", "VIEWS",

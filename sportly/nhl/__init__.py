@@ -33,6 +33,7 @@ Endpoint subpackage::
     from sportly.nhl.endpoints import games, schedule, teams
 """
 from __future__ import annotations
+
 from typing import Any
 
 from sportly.nhl._client import NHLClient

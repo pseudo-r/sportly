@@ -1,7 +1,9 @@
 """fantasy.endpoints.players — player pool and projections."""
 from __future__ import annotations
+
 import json
 from typing import Any
+
 from sportly.fantasy.endpoints._client import get_client
 
 

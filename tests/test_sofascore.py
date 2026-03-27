@@ -1,7 +1,7 @@
 """Tests for sportly.sofascore — mocked without curl_cffi (patches _get)."""
 from __future__ import annotations
-import pytest
 
+import pytest
 
 # ── Sofascore tests use monkeypatching on the internal _get function ──────────
 # because curl_cffi isn't installed in the test env (it's an optional extra).
@@ -88,7 +88,7 @@ class TestSofascoreEndpoints:
 
     def test_missing_curl_cffi_raises_import_error(self):
         """Without curl_cffi, _get_client() raises ImportError with helpful message."""
-        import importlib, sys
+        import sys
         # Temporarily hide curl_cffi
         saved = sys.modules.get("curl_cffi")
         sys.modules["curl_cffi"] = None  # type: ignore

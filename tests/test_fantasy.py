@@ -1,8 +1,9 @@
 """Tests for sportly.fantasy — mocked, no network."""
 from __future__ import annotations
+
 import httpx
-import pytest
-from sportly.fantasy import FantasyClient, GAME_CODES
+
+from sportly.fantasy import GAME_CODES, FantasyClient
 
 
 def _mock(status: int, body) -> FantasyClient:

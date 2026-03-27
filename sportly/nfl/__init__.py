@@ -27,13 +27,14 @@ Endpoint subpackage::
     from sportly.nfl.endpoints import games, teams, players, league
 """
 from __future__ import annotations
-from typing import Any
-from sportly.client import SportlyClient
 
+from typing import Any
+
+from sportly.client import SportlyClient
 from sportly.nfl.endpoints import games as _games_ep
-from sportly.nfl.endpoints import teams as _teams_ep
-from sportly.nfl.endpoints import players as _players_ep
 from sportly.nfl.endpoints import league as _league_ep
+from sportly.nfl.endpoints import players as _players_ep
+from sportly.nfl.endpoints import teams as _teams_ep
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 SPORT  = "football"

@@ -1,6 +1,8 @@
 """fantasy.endpoints.meta — game and season metadata."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.fantasy.endpoints._client import get_client
 
 

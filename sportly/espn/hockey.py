@@ -1,8 +1,9 @@
 """sportly.espn.hockey — NHL and college ice hockey via ESPN."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.client import SportlyClient
-from sportly.espn._domains import ESPNDomain
 from sportly.espn._leagues import LEAGUES as _ALL_LEAGUES
 from sportly.espn.endpoints import advanced as _advanced_ep
 from sportly.espn.endpoints import athletes as _athletes_ep

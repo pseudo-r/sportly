@@ -1,6 +1,8 @@
 """sofascore.endpoints.players — player profiles and career stats."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.sofascore.endpoints._client import get
 
 

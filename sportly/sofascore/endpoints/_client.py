@@ -1,5 +1,6 @@
 """sofascore.endpoints._client — shared HTTP helper."""
 from __future__ import annotations
+
 from typing import Any
 
 BASE_URL = "https://api.sofascore.com/api/v1"

@@ -5,8 +5,6 @@ from __future__ import annotations
 import pytest
 
 from sportly.nhl import NHLClient
-from sportly.client import SportlyClient, set_client
-from tests.conftest import MockSportlyClient
 
 
 @pytest.fixture()

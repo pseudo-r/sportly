@@ -1,7 +1,8 @@
 """Tests for sportly.nba — all mocked, no network."""
 from __future__ import annotations
+
 import httpx
-import pytest
+
 from sportly.nba._client import NBAClient, parse_result_sets
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

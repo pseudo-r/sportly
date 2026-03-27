@@ -1,6 +1,8 @@
 """sofascore.endpoints.events — match/event detail, stats, lineups, incidents."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.sofascore.endpoints._client import get
 
 

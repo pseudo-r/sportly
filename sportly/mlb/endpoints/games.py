@@ -1,6 +1,8 @@
 """sportly.mlb.endpoints.games — Live game data endpoints."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.mlb._client import MLBClient, get_client
 
 

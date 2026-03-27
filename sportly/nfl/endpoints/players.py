@@ -1,6 +1,8 @@
 """nfl.endpoints.players — NFL athlete profiles, stats, and game logs."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.client import SportlyClient, get_client
 from sportly.espn._domains import ESPNDomain, build_url
 from sportly.espn.endpoints import athletes as _athletes

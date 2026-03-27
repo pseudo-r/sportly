@@ -67,7 +67,7 @@ class MLBClient:
     def close(self) -> None:
         self._http.close()
 
-    def __enter__(self) -> "MLBClient":
+    def __enter__(self) -> MLBClient:
         return self
 
     def __exit__(self, *_) -> None:

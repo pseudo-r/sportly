@@ -37,8 +37,8 @@ from typing import Any
 from sportly.client import SportlyClient, get_client
 from sportly.espn._domains import ESPNDomain, build_url
 from sportly.espn._leagues import LEAGUES as _ALL_LEAGUES
-from sportly.espn.endpoints import athletes as _athletes_ep
 from sportly.espn.endpoints import advanced as _advanced_ep
+from sportly.espn.endpoints import athletes as _athletes_ep
 from sportly.espn.endpoints import news as _news_ep
 from sportly.espn.endpoints import schedule as _schedule_ep
 from sportly.espn.endpoints import standings as _standings_ep

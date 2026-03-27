@@ -1,7 +1,9 @@
 """Tests for sportly.fotmob — mocked, no network."""
 from __future__ import annotations
+
 import httpx
-from sportly.fotmob import FotMobClient, LEAGUES
+
+from sportly.fotmob import LEAGUES, FotMobClient
 
 
 def _mock(status: int, body) -> FotMobClient:

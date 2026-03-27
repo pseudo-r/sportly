@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import pytest
 import httpx
+import pytest
 
 from sportly.client import SportlyClient
-from sportly.exceptions import NotFoundError, RateLimitError, UpstreamError, SportlyError
+from sportly.exceptions import NotFoundError, RateLimitError, SportlyError, UpstreamError
 
 
 class TestClientErrorMapping:

@@ -1,6 +1,8 @@
 """nhl.endpoints.games — boxscore, play-by-play, and shifts."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.nhl._client import NHLClient
 
 

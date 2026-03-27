@@ -58,7 +58,7 @@ def _dump(obj: object) -> None:
 # ── info ──────────────────────────────────────────────────────────────────────
 
 def _cmd_info(args: argparse.Namespace) -> None:  # noqa: ARG001
-    from sportly import __version__, __author__, __email__
+    from sportly import __author__, __email__, __version__
     print(f"sportly {__version__}")
     print(f"Author : {__author__} <{__email__}>")
     print("Repo   : https://github.com/pseudo-r/sportly")
@@ -118,10 +118,7 @@ def _cmd_espn(args: argparse.Namespace) -> None:
     if hasattr(args, "date") and args.date:
         kwargs["date"] = args.date
 
-    if hasattr(args, "id") and args.id:
-        result = fn(args.id, **kwargs)
-    else:
-        result = fn(**kwargs)
+    result = fn(args.id, **kwargs) if hasattr(args, "id") and args.id else fn(**kwargs)
     _dump(result)
 
 

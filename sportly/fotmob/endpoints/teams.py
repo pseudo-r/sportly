@@ -1,6 +1,8 @@
 """fotmob.endpoints.teams — team profiles and squad details."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.fotmob.endpoints._client import FotMobClient, get_client
 
 

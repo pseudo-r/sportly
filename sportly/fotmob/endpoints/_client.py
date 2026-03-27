@@ -1,9 +1,11 @@
 """fotmob.endpoints._client — FotMob HTTP client."""
 from __future__ import annotations
+
 from typing import Any
 
 import httpx
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+
 from sportly.exceptions import NotFoundError, RateLimitError, SportlyError
 
 BASE_URL = "https://www.fotmob.com/api"
@@ -73,7 +75,7 @@ class FotMobClient:
     def close(self) -> None:
         self._http.close()
 
-    def __enter__(self) -> "FotMobClient":
+    def __enter__(self) -> FotMobClient:
         return self
 
     def __exit__(self, *_: Any) -> None:

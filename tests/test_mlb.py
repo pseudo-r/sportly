@@ -1,8 +1,9 @@
 """Tests for sportly.mlb — all mocked, no network."""
 from __future__ import annotations
-import json
+
 import httpx
 import pytest
+
 from sportly.mlb._client import MLBClient
 
 # ── Shared fixtures ───────────────────────────────────────────────────────────
@@ -134,8 +135,8 @@ class TestMLBPlayers:
         assert p["fullName"] == "Shohei Ohtani"
 
     def test_player_not_found(self):
-        from sportly.mlb.endpoints import players
         from sportly.exceptions import NotFoundError
+        from sportly.mlb.endpoints import players
         c = _mock(404, {})
         with pytest.raises(NotFoundError):
             players.player(999999, client=c)

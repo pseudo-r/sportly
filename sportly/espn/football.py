@@ -1,6 +1,8 @@
 """sportly.espn.football — NFL, college football, CFL."""
 from __future__ import annotations
+
 from typing import Any
+
 from sportly.client import SportlyClient, get_client
 from sportly.espn._domains import ESPNDomain, build_url
 from sportly.espn._leagues import LEAGUES as _ALL_LEAGUES

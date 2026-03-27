@@ -21,13 +21,14 @@ Endpoint subpackage::
     from sportly.fotmob.endpoints import matches, leagues, teams, players
 """
 from __future__ import annotations
+
 from typing import Any
 
-from sportly.fotmob.endpoints._client import FotMobClient, LEAGUES, get_client
-from sportly.fotmob.endpoints import matches as _matches_ep
 from sportly.fotmob.endpoints import leagues as _leagues_ep
-from sportly.fotmob.endpoints import teams as _teams_ep
+from sportly.fotmob.endpoints import matches as _matches_ep
 from sportly.fotmob.endpoints import players as _players_ep
+from sportly.fotmob.endpoints import teams as _teams_ep
+from sportly.fotmob.endpoints._client import LEAGUES, FotMobClient
 
 __all__ = [
     "FotMobClient", "LEAGUES",

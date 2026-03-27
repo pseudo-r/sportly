@@ -1,7 +1,9 @@
 """sportly.mlb.endpoints.stats — League stats, leaders, standings."""
 from __future__ import annotations
+
 from typing import Any
-from sportly.mlb._client import MLBClient, SPORT_ID, LEAGUE_AL, LEAGUE_NL, get_client
+
+from sportly.mlb._client import LEAGUE_AL, LEAGUE_NL, SPORT_ID, MLBClient, get_client
 
 
 def standings(

@@ -1,11 +1,10 @@
 """Tests for the sportly CLI entry point."""
 
 from __future__ import annotations
-import io
-import contextlib
-import argparse
 
-import pytest
+import argparse
+import contextlib
+import io
 
 from sportly.cli import _build_parser
 
@@ -221,8 +220,8 @@ class TestCLIHandlers:
         assert "fotmob" in out.lower()
 
     def test_mlb_teams_handler(self, monkeypatch):
-        import sportly.mlb as mlb
         import sportly.cli as cli
+        import sportly.mlb as mlb
         monkeypatch.setattr(mlb, "teams", lambda: [{"id": 119, "name": "Dodgers"}])
         args = _build_parser().parse_args(["mlb", "teams"])
         out = io.StringIO()
@@ -231,9 +230,9 @@ class TestCLIHandlers:
         assert "Dodgers" in out.getvalue()
 
     def test_mlb_standings_handler(self, monkeypatch):
-        import sportly.mlb as mlb
         import sportly.cli as cli
-        monkeypatch.setattr(mlb, "standings", lambda season=None: {"records": []})
+        import sportly.mlb as mlb
+        monkeypatch.setattr(mlb, "standings", lambda **_: {"records": []})
         args = _build_parser().parse_args(["mlb", "standings"])
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
@@ -241,9 +240,9 @@ class TestCLIHandlers:
         assert "records" in out.getvalue()
 
     def test_nfl_teams_handler(self, monkeypatch):
-        import sportly.nfl as nfl
         import sportly.cli as cli
-        monkeypatch.setattr(nfl, "teams", lambda limit=32: [{"id": 12, "name": "Chiefs"}])
+        import sportly.nfl as nfl
+        monkeypatch.setattr(nfl, "teams", lambda _l=32: [{"id": 12, "name": "Chiefs"}])
         args = _build_parser().parse_args(["nfl", "teams"])
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
@@ -251,8 +250,8 @@ class TestCLIHandlers:
         assert "Chiefs" in out.getvalue()
 
     def test_nfl_injuries_handler(self, monkeypatch):
-        import sportly.nfl as nfl
         import sportly.cli as cli
+        import sportly.nfl as nfl
         monkeypatch.setattr(nfl, "injuries", lambda: [{"team": "DAL"}])
         args = _build_parser().parse_args(["nfl", "injuries"])
         out = io.StringIO()
@@ -268,8 +267,8 @@ class TestCLIHandlers:
         assert "47" in out  # Premier League
 
     def test_nba_teams_handler(self, monkeypatch):
-        import sportly.nba as nba
         import sportly.cli as cli
+        import sportly.nba as nba
         monkeypatch.setattr(nba, "teams", lambda league_id="00": [{"id": "1610612747"}])
         args = _build_parser().parse_args(["nba", "teams"])
         out = io.StringIO()
@@ -278,8 +277,8 @@ class TestCLIHandlers:
         assert "1610612747" in out.getvalue()
 
     def test_fantasy_meta_handler(self, monkeypatch):
-        import sportly.fantasy as fantasy
         import sportly.cli as cli
+        import sportly.fantasy as fantasy
         monkeypatch.setattr(fantasy, "game_meta", lambda game, cookies=None: {"currentSeasonId": 2026})
         args = _build_parser().parse_args(["fantasy", "meta", "ffl"])
         out = io.StringIO()
@@ -288,8 +287,8 @@ class TestCLIHandlers:
         assert "2026" in out.getvalue()
 
     def test_fantasy_teams_handler(self, monkeypatch):
-        import sportly.fantasy as fantasy
         import sportly.cli as cli
+        import sportly.fantasy as fantasy
         monkeypatch.setattr(fantasy, "teams", lambda g, *, league_id, season, cookies=None: [{"id": 1}])
         args = _build_parser().parse_args(
             ["fantasy", "teams", "ffl", "--league-id", "123", "--season", "2025"]
@@ -300,8 +299,8 @@ class TestCLIHandlers:
         assert '"id": 1' in out.getvalue()
 
     def test_nfl_scoreboard_handler(self, monkeypatch):
-        import sportly.nfl as nfl
         import sportly.cli as cli
+        import sportly.nfl as nfl
         monkeypatch.setattr(nfl, "scoreboard", lambda week=None, season=None, season_type=None, date=None, limit=32: [])
         args = _build_parser().parse_args(["nfl", "scoreboard", "--week", "1"])
         out = io.StringIO()

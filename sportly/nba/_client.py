@@ -5,8 +5,10 @@ No auth required, but WAF headers are mandatory on every request.
 Response shape: resultSets[{name, headers[], rowSet[[]]}]
 """
 from __future__ import annotations
+
 import httpx
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+
 from sportly.exceptions import NotFoundError, RateLimitError, SportlyError
 
 BASE_URL = "https://stats.nba.com/stats"
@@ -69,7 +71,7 @@ def parse_result_sets(data: dict) -> dict[str, list[dict]]:
     for rs in data.get("resultSets", []):
         headers = rs.get("headers", [])
         rows = rs.get("rowSet", [])
-        out[rs["name"]] = [dict(zip(headers, row)) for row in rows]
+        out[rs["name"]] = [dict(zip(headers, row, strict=False)) for row in rows]
     return out
 
 

@@ -1,7 +1,9 @@
 """sportly.nba.endpoints.games — Scoreboard and game data."""
 from __future__ import annotations
+
 from typing import Any
-from sportly.nba._client import NBAClient, LEAGUE_NBA, parse_result_sets, get_client
+
+from sportly.nba._client import LEAGUE_NBA, NBAClient, get_client, parse_result_sets
 
 
 def scoreboard(

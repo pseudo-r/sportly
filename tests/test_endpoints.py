@@ -278,3 +278,105 @@ class TestNFLLeagueEp:
         import sportly.nfl.endpoints.league as le
         result = le.transactions()
         assert result[0]["type"] == "trade"
+
+
+# ── NHL endpoint submodules ───────────────────────────────────────────────────
+
+def _mock_nhl_client(body: dict):
+    """Return an NHLClient whose _get() is monkeypatched to return body."""
+    from sportly.nhl._client import NHLClient
+    c = NHLClient()
+    c._get = lambda path, **params: body
+    return c
+
+
+class TestNHLGamesEp:
+    def test_boxscore_returns_dict(self):
+        from sportly.nhl.endpoints import games
+        c = _mock_nhl_client({"id": "2024020001", "homeTeam": {"abbrev": "TOR"}})
+        result = games.boxscore("2024020001", client=c)
+        assert result["homeTeam"]["abbrev"] == "TOR"
+
+    def test_play_by_play_returns_dict(self):
+        from sportly.nhl.endpoints import games
+        c = _mock_nhl_client({"plays": [{"typeDescKey": "shot-on-goal"}]})
+        result = games.play_by_play("2024020001", client=c)
+        assert result["plays"][0]["typeDescKey"] == "shot-on-goal"
+
+    def test_landing_returns_dict(self):
+        from sportly.nhl.endpoints import games
+        c = _mock_nhl_client({"gameState": "FINAL"})
+        result = games.landing("2024020001", client=c)
+        assert result["gameState"] == "FINAL"
+
+
+class TestNHLScheduleEp:
+    def test_schedule_today(self):
+        from sportly.nhl.endpoints import schedule
+        c = _mock_nhl_client({"gameWeek": []})
+        result = schedule.schedule(client=c)
+        assert "gameWeek" in result
+
+    def test_schedule_specific_date(self):
+        from sportly.nhl.endpoints import schedule
+        c = _mock_nhl_client({"gameWeek": [{"date": "2024-04-15"}]})
+        result = schedule.schedule("2024-04-15", client=c)
+        assert result["gameWeek"][0]["date"] == "2024-04-15"
+
+    def test_weekly_schedule(self):
+        from sportly.nhl.endpoints import schedule
+        c = _mock_nhl_client({"gameWeek": [{"date": "2024-04-15"}, {"date": "2024-04-16"}]})
+        result = schedule.weekly(client=c)
+        assert len(result["gameWeek"]) == 2
+
+
+class TestNHLTeamsEp:
+    def test_franchises_returns_list(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"data": [{"id": 1, "fullName": "Montreal Canadiens"}]})
+        result = teams.franchises(client=c)
+        assert result[0]["fullName"] == "Montreal Canadiens"
+
+    def test_franchises_empty_data(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({})
+        result = teams.franchises(client=c)
+        assert result == []
+
+    def test_roster_current(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"forwards": [], "defense": [], "goalies": []})
+        result = teams.roster("TOR", client=c)
+        assert "forwards" in result
+
+    def test_roster_historical(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"forwards": [{"lastName": {"default": "Sundin"}}]})
+        result = teams.roster("TOR", "20052006", client=c)
+        assert result["forwards"][0]["lastName"]["default"] == "Sundin"
+
+    def test_standings_current(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"standings": [{"teamAbbrev": {"default": "TOR"}}]})
+        result = teams.standings(client=c)
+        assert result["standings"][0]["teamAbbrev"]["default"] == "TOR"
+
+    def test_standings_by_date(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"standings": []})
+        result = teams.standings(date="2024-03-01", client=c)
+        assert "standings" in result
+
+    def test_player_profile(self):
+        from sportly.nhl.endpoints import teams
+        c = _mock_nhl_client({"playerId": 8481528, "firstName": {"default": "Connor"}})
+        result = teams.player(8481528, client=c)
+        assert result["firstName"]["default"] == "Connor"
+
+
+class TestNHLModulePublicAPI:
+    def test_all_functions_callable(self):
+        import sportly.nhl as nhl
+        for fn in ["teams", "schedule", "game", "play_by_play", "landing",
+                   "roster", "standings", "player", "weekly"]:
+            assert callable(getattr(nhl, fn)), f"nhl.{fn} not callable"
